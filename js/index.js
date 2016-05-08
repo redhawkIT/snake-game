@@ -1,34 +1,37 @@
 //thecodeplayer.com/walkthrough/html5-game-tutorial-make-a-snake-game-using-html5-canvas-jquery
 
 $(function() {
+  // fix bottom and right bounds
     const KEYS = {left: 37, up: 38, right: 39, down: 40};
 
     //Canvas stuff
-    let canvas = $("#canvas")[0];
+    let canvas = document.getElementById("myCanvas");
     let ctx = canvas.getContext("2d");
-    let w = $("#canvas").width();
-    let h = $("#canvas").height();
+    let w = canvas.width = window.innerWidth - 20;
+    let h = canvas.height = window.innerHeight - 20;
 
     //Lets save the cell width in a variable for easy control
-    const cw = 10;
+    const cellSize = w / 60;
     let d, food, score, snakeArray;
+    // let gridSizeX = w / cellSize;
+    // let gridSizeY = h / cellSize;
 
     //create the snake
     function init() {
         d = "right"; //default direction
         createSnake();
-        createFood(); //Now we can see the food particle
-        score = cw;
+        createFood();
+        score = 10;
         // resets so that multiple instances are not created
         if (typeof gameLoop != "undefined") clearInterval(gameLoop);
 
-        gameLoop = setInterval(paint, 80);
+        gameLoop = setInterval(paint, 85);
     }
     init();
 
     function createSnake() {
         const length = 10; //Length of the snake
-        snakeArray = []; //Empty array to start with
+        snakeArray = []; 
 
         for (let i = length - 1; i >= 0; i--) {
             // create a horizontal snake starting from the top left
@@ -42,8 +45,8 @@ $(function() {
     //Lets create the food now
     function createFood() {
         food = {
-            x: Math.round(Math.random() * (w - cw) / cw),
-            y: Math.round(Math.random() * (h - cw) / cw),
+            x: Math.round(Math.random() * (w - cellSize) / cellSize),
+            y: Math.round(Math.random() * (h - cellSize) / cellSize),
         };
         //This will create a cell with x/y between 0-44
         //Because there are 45(450/10) positions accross the rows and columns
@@ -52,10 +55,8 @@ $(function() {
     //paint the snake
     function paint() {
         //To avoid the snake trail we need to paint the BG on every frame
-        ctx.fillStyle = "white";
+        ctx.fillStyle = "black";
         ctx.fillRect(0, 0, w, h);
-        ctx.strokeStyle = "black";
-        ctx.strokeRect(0, 0, w, h);
 
         //Pop out the tail cell and place it infront of the head cell
         let nx = snakeArray[0].x;
@@ -76,7 +77,7 @@ $(function() {
         //Lets add the game over clauses now
         //This will restart the game if the snake hits the wall
         //Now if the head of the snake bumps into its body, the game will restart
-        if (nx == -1 || nx == w / cw || ny == -1 || ny == h / cw || checkCollision(nx, ny, snakeArray)) {
+        if (nx == -1 || nx == w / cellSize || ny == -1 || ny == h / cellSize || checkCollision(nx, ny, snakeArray)) {
             init(); //restart game
             return;
         }
@@ -102,10 +103,12 @@ $(function() {
 
     //Lets first create a generic function to paint cells
     function paintCell(x, y) {
-        ctx.fillStyle = "blue";
-        ctx.fillRect(x * cw, y * cw, cw, cw);
-        ctx.strokeStyle = "white";
-        ctx.strokeRect(x * cw, y * cw, cw, cw);
+        ctx.fillStyle = '#00FFFF';
+        //ctx.arc(x * cellSize, y * cellSize, cellSize / 2, 0, 2 * Math.PI);
+        ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+        ctx.strokeStyle = "black";
+        ctx.strokeRect(x * cellSize, y * cellSize, cellSize, cellSize);
+
     }
 
     function checkCollision(x, y, array) {
