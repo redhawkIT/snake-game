@@ -9,12 +9,9 @@ $(function() {
     let ctx = canvas.getContext("2d");
     let w = canvas.width = window.innerWidth - 20;
     let h = canvas.height = window.innerHeight - 20;
-
-    //Lets save the cell width in a variable for easy control
-    const cellSize = w / 60;
+    
+    const cellSize = Math.round(w / 60);
     let d, food, score, snakeArray;
-    // let gridSizeX = w / cellSize;
-    // let gridSizeY = h / cellSize;
 
     //create the snake
     function init() {
@@ -34,7 +31,6 @@ $(function() {
         snakeArray = []; 
 
         for (let i = length - 1; i >= 0; i--) {
-            // create a horizontal snake starting from the top left
             snakeArray.push({
                 x: i,
                 y: 0
@@ -48,8 +44,6 @@ $(function() {
             x: Math.round(Math.random() * (w - cellSize) / cellSize),
             y: Math.round(Math.random() * (h - cellSize) / cellSize),
         };
-        //This will create a cell with x/y between 0-44
-        //Because there are 45(450/10) positions accross the rows and columns
     }
 
     //paint the snake
@@ -77,7 +71,7 @@ $(function() {
         //Lets add the game over clauses now
         //This will restart the game if the snake hits the wall
         //Now if the head of the snake bumps into its body, the game will restart
-        if (nx == -1 || nx == w / cellSize || ny == -1 || ny == h / cellSize || checkCollision(nx, ny, snakeArray)) {
+        if (nx == -1 || nx > w / cellSize || ny == -1 || ny > h / cellSize || checkCollision(nx, ny, snakeArray)) {
             init(); //restart game
             return;
         }
